@@ -4,12 +4,12 @@ using UnityEngine.EventSystems;
 
 namespace UnityEngine.UI
 {
-    //[AddComponentMenu("UI/Scroll Rect", 37)]
+    [AddComponentMenu("UI/UGUI Scroll Rect", 37)]
     [SelectionBase]
     [ExecuteInEditMode]
     [DisallowMultipleComponent]
     [RequireComponent(typeof(RectTransform))]
-    public class MyScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IScrollHandler, ICanvasElement, ILayoutElement, ILayoutGroup
+    public class UGUIScrollRect : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IScrollHandler, ICanvasElement, ILayoutElement, ILayoutGroup
     {
         public enum MovementType
         {
@@ -176,7 +176,7 @@ namespace UnityEngine.UI
 
         private DrivenRectTransformTracker m_Tracker;
 
-        protected MyScrollRect()
+        protected UGUIScrollRect()
         { }
 
         public virtual void Rebuild(CanvasUpdate executing)
@@ -374,23 +374,8 @@ namespace UnityEngine.UI
             }
         }
 
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.M))
-            {
-                Vec3ToString(m_ViewBounds.size);
-                Vec3ToString(m_ContentBounds.size);
-            }
-        }
-
-        public static void Vec3ToString(Vector3 vec, string tag = "")
-        {
-            Debug.LogWarning(string.Format("{0}={1},{2},{3}", tag, vec.x, vec.y, vec.z));
-        }
-
         protected virtual void LateUpdate()
         {
-            //return;
             if (!m_Content)
                 return;
 
@@ -780,17 +765,12 @@ namespace UnityEngine.UI
                 if (max.y < m_ViewBounds.max.y)
                 {
                     offset.y = m_ViewBounds.max.y - max.y;
-                    Debug.LogWarning("111Maxxxx");
                 }
                 else if (min.y > m_ViewBounds.min.y)
                 {
                     offset.y = m_ViewBounds.min.y - min.y;
-                    Debug.LogWarning("111Minnnn");
                 }
             }
-
-            Vec3ToString(min, "111min");
-            Vec3ToString(m_ViewBounds.min, "111viewBounds");
 
             return offset;
         }

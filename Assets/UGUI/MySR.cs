@@ -18,13 +18,23 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
     [SerializeField]
     private RectTransform m_Content;
     [SerializeField]
-    private RectTransform m_ViewRect;
-    [SerializeField]
     private bool m_Horizontal = true;
     [SerializeField]
     private bool m_Vertical = true;
     [SerializeField]
     private MovementType m_MovementType = MovementType.Elastic;
+    [SerializeField]
+    private float m_Elasticity = 0.1f; // Only used for MovementType.Elastic
+    [SerializeField]
+    private bool m_Inertia = true;
+    [SerializeField]
+    private float m_DecelerationRate = 0.135f; // Only used when inertia is enabled
+    [SerializeField]
+    private RectTransform m_ViewRect;
+
+    private Vector2 m_PrevPosition = Vector2.zero;
+    private Bounds m_PrevContentBounds;
+    private Bounds m_PrevViewBounds;
 
     private Vector2 m_Velocity;
     private bool m_Dragging;
@@ -35,33 +45,6 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
 
     private Bounds m_ContentBounds;
     private Bounds m_ViewBounds;
-
-    protected override void Awake()
-    {
-        base.Awake();
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            Vec3ToString(m_ViewBounds.size);
-            Vec3ToString(m_ContentBounds.size);
-
-            //Vector2 localCursor;
-            //if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(m_ViewRect, Input.mousePosition, null, out localCursor))
-            //{
-            //    Debug.LogWarning("xxxx");
-            //    return;
-            //}
-            //Vec3ToString(localCursor);
-        }
-    }
-
-    public static void Vec3ToString(Vector3 vec, string tag = "")
-    {
-        Debug.LogWarning(string.Format("{0}={1},{2},{3}", tag, vec.x, vec.y, vec.z));
-    }
 
     public virtual void OnInitializePotentialDrag(PointerEventData eventData)
     {
@@ -118,8 +101,7 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
         {
             return;
         }
-        //Vec3ToString(localCursor);
-
+        
         UpdateBounds();
 
         var pointerDelta = localCursor - m_PointerStartLocalCursor;
@@ -170,15 +152,16 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
     {
         m_ViewBounds = new Bounds(m_ViewRect.rect.center, m_ViewRect.rect.size);
         m_ContentBounds = GetBounds();
-
-        //Vec3ToString(m_ContentBounds.min, "m_ContentBounds");
+        //注意，m_ContentBounds不能和m_ViewBounds一样直接获得，不然求出的m_ContentBounds.min是在本地坐标下的，不是相对m_ViewRect的
     }
 
     private readonly Vector3[] m_Corners = new Vector3[4];
     private Bounds GetBounds()
     {
         if (m_Content == null)
+        {
             return new Bounds();
+        }
 
         var vMin = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
         var vMax = new Vector3(float.MinValue, float.MinValue, float.MinValue);
@@ -225,30 +208,15 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
             if (max.y < m_ViewBounds.max.y)
             {
                 offset.y = m_ViewBounds.max.y - max.y;
-                Debug.LogWarning("Maxxxx");
             }
             else if (min.y > m_ViewBounds.min.y)
             {
                 offset.y = m_ViewBounds.min.y - min.y;
-                Debug.LogWarning("Minnnn");
             }
         }
 
-        Vec3ToString(min, "min");
-        Vec3ToString(m_ViewBounds.min, "viewBounds");
-
         return offset;
     }
-
-    [SerializeField]
-    private bool m_Inertia = true;
-    [SerializeField]
-    private float m_DecelerationRate = 0.135f; // Only used when inertia is enabled
-    private Vector2 m_PrevPosition = Vector2.zero;
-    private Bounds m_PrevContentBounds;
-    private Bounds m_PrevViewBounds;
-    [SerializeField]
-    private float m_Elasticity = 0.1f; // Only used for MovementType.Elastic
 
     protected virtual void LateUpdate()
     {
@@ -309,9 +277,13 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
     private void UpdatePrevData()
     {
         if (m_Content == null)
+        {
             m_PrevPosition = Vector2.zero;
+        }
         else
+        {
             m_PrevPosition = m_Content.anchoredPosition;
+        }
         m_PrevViewBounds = m_ViewBounds;
         m_PrevContentBounds = m_ContentBounds;
     }

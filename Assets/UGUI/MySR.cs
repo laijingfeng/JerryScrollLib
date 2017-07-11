@@ -96,6 +96,7 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
             return;
         }
 
+        //TODO:这一步做什么用？确保在同一个平面？
         Vector2 localCursor;
         if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(m_ViewRect, eventData.position, eventData.pressEventCamera, out localCursor))
         {
@@ -180,6 +181,11 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
         return bounds;
     }
 
+    /// <summary>
+    /// 计算超出偏移
+    /// </summary>
+    /// <param name="delta"></param>
+    /// <returns></returns>
     private Vector2 CalculateOffset(Vector2 delta)
     {
         Vector2 offset = Vector2.zero;
@@ -218,6 +224,9 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
         return offset;
     }
 
+    /// <summary>
+    /// 处理缓动
+    /// </summary>
     protected virtual void LateUpdate()
     {
         UpdateBounds();

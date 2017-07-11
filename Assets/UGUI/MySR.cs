@@ -23,19 +23,25 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
     private bool m_Vertical = true;
     [SerializeField]
     private MovementType m_MovementType = MovementType.Elastic;
+    /// <summary>
+    /// 弹性系数
+    /// </summary>
     [SerializeField]
     private float m_Elasticity = 0.1f; // Only used for MovementType.Elastic
+    /// <summary>
+    /// 惯性
+    /// </summary>
     [SerializeField]
     private bool m_Inertia = true;
+    /// <summary>
+    /// 减速率
+    /// </summary>
     [SerializeField]
     private float m_DecelerationRate = 0.135f; // Only used when inertia is enabled
     [SerializeField]
     private RectTransform m_ViewRect;
 
     private Vector2 m_PrevPosition = Vector2.zero;
-    private Bounds m_PrevContentBounds;
-    private Bounds m_PrevViewBounds;
-
     private Vector2 m_Velocity;
     private bool m_Dragging;
 
@@ -249,7 +255,9 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
                 {
                     m_Velocity[axis] *= Mathf.Pow(m_DecelerationRate, deltaTime);
                     if (Mathf.Abs(m_Velocity[axis]) < 1)
+                    {
                         m_Velocity[axis] = 0;
+                    }
                     position[axis] += m_Velocity[axis] * deltaTime;
                 }
                 // If we have neither elaticity or friction, there shouldn't be any velocity.
@@ -277,7 +285,7 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
             m_Velocity = Vector3.Lerp(m_Velocity, newVelocity, deltaTime * 10);
         }
 
-        if (m_ViewBounds != m_PrevViewBounds || m_ContentBounds != m_PrevContentBounds || m_Content.anchoredPosition != m_PrevPosition)
+        if (m_Content.anchoredPosition != m_PrevPosition)
         {
             UpdatePrevData();
         }
@@ -293,7 +301,5 @@ public class MySR : UIBehaviour, IInitializePotentialDragHandler, IBeginDragHand
         {
             m_PrevPosition = m_Content.anchoredPosition;
         }
-        m_PrevViewBounds = m_ViewBounds;
-        m_PrevContentBounds = m_ContentBounds;
     }
 }

@@ -824,7 +824,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &913754949
 RectTransform:
   m_ObjectHideFlags: 0
@@ -855,13 +855,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Content: {fileID: 609866634}
-  m_ViewRect: {fileID: 2068021940}
   m_Horizontal: 0
   m_Vertical: 1
   m_MovementType: 0
+  m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_Elasticity: 0.1
+  m_ViewRect: {fileID: 2068021940}
 --- !u!114 &913754951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1647,7 +1647,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1802892704
 RectTransform:
   m_ObjectHideFlags: 0
